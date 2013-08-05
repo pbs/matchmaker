@@ -1,0 +1,11 @@
+*.pyc
+*.log
+*.pot
+.DS_Store
+globals.py
+test_users.txt
+old
+.project
+.pydevproject
+*.egg-info/*
+

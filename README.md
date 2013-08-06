@@ -3,9 +3,7 @@ matchmaker
 
 Matchmaker is an authentication library for PBS, meant to connect a user's
 Over-The-Top (OTT) devices such as the AppleTV, Roku, and GoogleTV to
-the user's MyPBS video content stored in his/her PBS Gigya account. The
-service can be accessed either as a library or a web API. Both methods
-have a two-part authentication flow.
+the user's MyPBS video content stored in his/her PBS Gigya account.
 
 sample code
 -------------

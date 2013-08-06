@@ -2,7 +2,7 @@
 *.log
 *.pot
 .DS_Store
-globals.py
+globals_secret.py
 test_users.txt
 old
 .project

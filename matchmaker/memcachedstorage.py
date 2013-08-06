@@ -2,11 +2,13 @@ import memcache
 from auth_base import AuthStorage
 
 class MemcachedStorage(AuthStorage):
-	def __init__(self, SERVER, cache=None):
+	def __init__(self, server, cache=None):
+		if not (server or cache):
+			raise ValueError("No server set for memcached! Please check your globals.py file and try again.")
 		if cache:
 			self.cache = cache
 		else:
-			self.cache = memcache.Client([SERVER])
+			self.cache = memcache.Client([server])
 
 	def get_value(self, key, **kwargs):
 		ret = ""

@@ -3,6 +3,8 @@ from account_base import AccountStorage
 
 class GigyaStorage(AccountStorage):
 	def __init__(self, api_key, secret):
+		if not (api_key and secret):
+			raise ValueError("Your Gigya access keys are empty. Please check your globals.py file and try again.")
 		self.credentials = { "apiKey": api_key, "secret": secret }
 		self.set_url = "https://accounts.gigya.com/accounts.setAccountInfo"
 		self.get_url = "https://accounts.gigya.com/accounts.search"

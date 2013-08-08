@@ -30,8 +30,7 @@ class Matchmaker(object):
 		its users. On failure, it returns error message.  On success, it
 		returns the user id and device UID.
 		"""
-		valid = re.match('^[\w_\-=]+$', device_id)
-		if not valid:
+		if not self._is_valid(device_id):
 			return {"error": "Illegal device ID."}
 
 		in_account = self.acct.get_user_of_device(device_id)
@@ -49,8 +48,7 @@ class Matchmaker(object):
 		"""
 		# todo: sanitize device_id.  Allow alphanumeric and dash (slug like)
 		# return false otherwise
-		valid = re.match('^[\w_\-=]+$', device_id)
-		if not valid:
+		if not self._is_valid(device_id):
 			return {"error": "Illegal device ID."}
 
 		return self.auth.dummy_device(device_id) #dummy device dict
@@ -60,8 +58,7 @@ class Matchmaker(object):
 		Associate a device to a user ID. If the attempt to add fails, 
 		the additions are reverted.
 		"""
-		valid = re.match('^[\w_\-=]+$', user_id)
-		if not valid:
+		if not self._is_valid(user_id):
 			return {"error": "Invalid user ID."}
 
 		# Sanity check: do both the device and user exist?
@@ -104,8 +101,7 @@ class Matchmaker(object):
 			return {"error": "Multiple users allowed and no user_id is present!"}
 
 		# If multi is false, it's possible they may not have given you a user_id
-		valid = re.match('^[\w_\-=]+$', device_id)
-		if not valid:
+		if not self._is_valid(device_id):
 			return {"error": "Invalid user ID."}
 		if not user_id:
 			user_id = self.acct.get_user_of_device(device_id)
@@ -118,3 +114,10 @@ class Matchmaker(object):
 			return {"error": "Could not remove the device from the user's data."}
 		else:
 			return {"deleted": "Account/device relationship terminated."}
+
+	def _is_valid(self, text):
+		valid = re.match('^[\w_\-=]+$', text)
+		if not valid:
+			return False
+		else:
+			return True

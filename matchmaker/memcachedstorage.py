@@ -2,6 +2,12 @@ import memcache
 from auth_base import AuthStorage
 
 class MemcachedStorage(AuthStorage):
+	"""
+	Uses memcached as the storage mechanism for auth codes.
+	Since the base AuthStorage object handles most of the behavior,
+	this class just implements getting and setting keys in
+	memcached.
+	"""
 	def __init__(self, server, cache=None):
 		if not (server or cache):
 			raise ValueError("No server set for memcached! Please check your globals.py file and try again.")

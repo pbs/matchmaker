@@ -10,10 +10,17 @@ class GigyaStorage(AccountStorage):
 		self.get_url = "https://accounts.gigya.com/accounts.search"
 
 	def add_device(self, uid, device_id):
+		"""
+		Links a user to a device. If the attempt fails, the function
+		returns false.
+		"""
 		return self._set_device(uid, device_id)
 
-	#Does the queried device have a user associated with it?
 	def get_user_of_device(self, device_id):
+		"""
+		Get the user (or users, if multiple users is allowed) for
+		a given device. Returns a list of 1+ users.
+		"""
 		query = "SELECT UID FROM accounts WHERE data.devices.id_s = '%s'" % (device_id)
 		params = { "query": query }
 		uid = self._query(params, "get")
@@ -23,6 +30,9 @@ class GigyaStorage(AccountStorage):
 			return False
 
 	def does_user_exist(self, uid):
+		"""
+		Checks to see if the given user_id exists in Gigya.
+		"""
 		query = "SELECT UID FROM accounts WHERE UID='%s'" % (uid,)
 		params = {"query": query}
 		uid = self._query(params, "get")
@@ -54,6 +64,12 @@ class GigyaStorage(AccountStorage):
 			return devices
 
 	def _set_device(self, uid, device_id, remove=False):
+		"""
+		Either adds or removes a device from the user's list of
+		devices in Gigya. Returns False on a status error, and otherwise
+		returns the status of the query to alter the device data
+		in Gigya.
+		"""
 		#Get all devices for this user
 		devices = self._get_device(uid)
 		new_device = { "id_s": device_id, "is_active_b": True }
@@ -67,7 +83,7 @@ class GigyaStorage(AccountStorage):
 				if d['id_s'] == device_id:
 					if remove:
 						devices['devices'].remove(d)
-					else: #found a device when we're trying to register it
+					else: #found the device when we're trying to register it
 						return False
 			if not remove:
 				devices['devices'].append(new_device)

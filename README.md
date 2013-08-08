@@ -11,9 +11,10 @@ The following sample code is test code meant to automatically run through the en
 
 	from matchmaker import Matchmaker, GigyaStorage, MemcachedStorage
 	
+	multiple = False
 	auth = MemcachedStorage("127.0.0.1:11211")
 	acct = GigyaStorage("the_api_key", "the_secret")
-	mm = Matchmaker(auth_storage=auth, acct_storage=acct)
+	mm = Matchmaker(auth_storage=auth, acct_storage=acct, multi=multiple)
 
 	device_id = "test_device"
 	uid = "_guid_lAtpDqR_emDPQB5dcb6iLVP-eBkAC32J2ySHwUsFGjs="
@@ -77,6 +78,7 @@ Resulting JSON:
 	
 Possible `error_message` returns:
 * Illegal user ID: the user_id you sent contains characters other than alphanumerics or _-=
+* This device has already been registered to you!: applies when ALLOW_MULTIPLE is enabled
 * No device associated with that auth code: either the auth code expired, or the user entered the auth code wrong
 * No such user exists: Matchmaker checked your user storage and found no user matching that user_id
 * Another user has already registered this device: Matchmaker does not currently support having multiple users linked to the same device. Unlink the device, or ponder your failings.
@@ -84,14 +86,14 @@ Possible `error_message` returns:
 
 ### get_user()
 * Parameters: device_id
-* Use: Continuously poll this function to see if device->user assocation has been completed. See the JSON return values below.
+* Use: Continuously poll this function to see if device->user assocation has been completed. On success, it will return a list of 1+ users. See the JSON return values below.
 * Diagram: <a href="https://s3.amazonaws.com/uploads.hipchat.com/24330/346822/6ovza43nc4hvjaa/Matchmaker.get_auth_code().png">link</a>
 
 Returns the following json:
 
 	{
 		"device_id": "the device id sent in the call",
-		"user_id": "_guid_etc=="
+		"user_id": ["_guid_etc==", "optional_second_id"]
 	}
 
 Possible `error_message` returns:
@@ -99,7 +101,7 @@ Possible `error_message` returns:
 * No such user exists: Matchmaker checked your user storage and found no user matching that user_id
 
 ### unlink_device()
-* Parameters: device_id
+* Parameters: device_id[, user_id]
 * Use: Call to remove the device->user relationship from account storage. This will only remove the specific device data - the rest of the account data is left untouched.
 * Diagram: <a href="https://s3.amazonaws.com/uploads.hipchat.com/24330/346822/hrmw7tlux801dok/Matchmaker.unlink_device().png">here</a>
 
@@ -111,5 +113,6 @@ Resulting JSON:
 
 Possible `error_message` returns:
 * Illegal user ID: the user_id you sent contains characters other than alphanumerics or _-=
+* Multiple users allowed and no user_id is present: ALLOW_MULTIPLE is enabled, and you have not specified a user_id.
 * No user belongs to this device: after checking your account storage, no user was found that had registered the device specified
 * Could not remove the device from the user's data: something went awry in your account storage's remove_device() method

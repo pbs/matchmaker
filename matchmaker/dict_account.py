@@ -23,11 +23,12 @@ class DictionaryAccount(AccountStorage):
 
 	def get_user_of_device(self, device_id):
 		"""Gets the user for the given device_id, if one exists"""
+		users = []
 		for key in self.acct_dict:
 			if device_id in self.acct_dict[key]:
-				return key
+				users.append(key)
 
-		return False
+		return users
 
 	def does_user_exist(self, user_id):
 		"""Checks if the user exists in account storage"""

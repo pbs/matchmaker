@@ -14,11 +14,11 @@ class GigyaStorage(AccountStorage):
 
 	#Does the queried device have a user associated with it?
 	def get_user_of_device(self, device_id):
-		query = "SELECT UID FROM accounts WHERE data.devices.id_s = '%s' AND data.devices.is_active_b = True" % (device_id)
+		query = "SELECT UID FROM accounts WHERE data.devices.id_s = '%s'" % (device_id)
 		params = { "query": query }
 		uid = self._query(params, "get")
 		if uid['results']:
-			return uid['results'][0]['UID']
+			return [id['UID'] for id in uid['results']]
 		else:
 			return False
 
@@ -74,11 +74,10 @@ class GigyaStorage(AccountStorage):
 		else:
 			devices['devices'].append(new_device)
 
-		params = { "UID": uid }
+		params = { "UID": uid}
 		params.update(data = json.dumps(devices))
 		retval = self._query(params, "set")
 		return retval
-
 
 	def _query(self, p, type):
 		url = self.set_url if type is "set" else self.get_url

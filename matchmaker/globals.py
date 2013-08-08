@@ -1,3 +1,6 @@
+# Determines whether or not you are allowing a device to have multiple users
+ALLOW_MULTIPLE = False
+
 # Timeout for authorization codes
 TIMEOUT = 60 * 15
 

@@ -2,7 +2,7 @@
 from setuptools import setup, find_packages
 
 dependencies = [
-	'requests==1.2.3',
+	'requests==2.20.0',
 	'python-memcached==1.5.3'
 ]
 
